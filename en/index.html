@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICL Postoperative Vault Adjustment Strategy Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        .results-section { border-left: 3px solid #3b82f6; padding-left: 1rem; margin-top: 0.5rem; }
+        .results-section h5 { font-weight: 600; color: #1d4ed8; margin-bottom: 0.25rem;}
+        .results-section h6 { font-weight: 600; color: #1e40af; margin-top: 0.5rem; margin-bottom: 0.25rem;}
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center py-8 px-4">
+    <div class="bg-white p-6 sm:p-8 rounded-xl shadow-2xl w-full max-w-3xl">
+        <h1 class="text-2xl sm:text-3xl font-bold text-center text-sky-700 mb-3">
+            ICL Postoperative Vault Adjustment Strategy Assistant
+        </h1>
+        <p class="text-xs text-gray-500 mb-3 text-center">
+            For The EVO Implantable Collamer Lens (ICL Model V4c; STAAR Surgical Inc, Monrovia, CA, USA)
+        </p>
+        <p class="text-sm text-gray-600 mb-6 text-center">
+            This tool is based on a simplified theoretical model to assist clinicians in developing ICL postoperative vault adjustment strategies.
+            <br>Core Principle: Use the theoretically calculated <strong class="text-red-600">change</strong> in vault to predict the actual clinical <strong class="text-red-600">change</strong> in vault after adjustment.
+        </p>
+
+        <div class="space-y-6 mb-6"> 
+            <div>
+                <h4 class="text-lg font-semibold text-gray-800 border-b pb-2 mb-3">1. Ocular Parameters</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                    <div>
+                        <label for="a_sulcus" class="block text-sm font-medium text-gray-700 mb-1">Horizontal Sulcus Diameter a (STS<sub>h</sub>, mm):</label>
+                        <input type="number" id="a_sulcus" step="0.1" class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm" placeholder="e.g., 11.6">
+                    </div>
+                    <div>
+                        <label for="b_sulcus" class="block text-sm font-medium text-gray-700 mb-1">Vertical Sulcus Diameter b (STS<sub>v</sub>, mm):</label>
+                        <input type="number" id="b_sulcus" step="0.1" class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm" placeholder="e.g., 12.2">
+                    </div>
+                    <div class="md:col-span-2"> 
+                        <label for="stsl" class="block text-sm font-medium text-gray-700 mb-1">STSL (Lens anterior surface to sulcus plane distance, mm):</label>
+                        <input type="number" id="stsl" value="0.5" step="0.01" class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm" placeholder="e.g., 0.3 - 0.7">
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h4 class="text-lg font-semibold text-gray-800 border-b pb-2 mb-3">2. Current ICL Parameters (Initial Surgery)</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                    <div>
+                        <label for="L_icl_chord_current" class="block text-sm font-medium text-gray-700 mb-1">ICL Labeled Size (diagonal <strong class="text-blue-600">chord length</strong> L<sub>ICL</sub>, mm):</label>
+                        <select id="L_icl_chord_current" class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm" title="Standard sizes provided by the manufacturer">
+                            <option value="12.1">12.1 mm</option>
+                            <option value="12.6" selected>12.6 mm</option>
+                            <option value="13.2">13.2 mm</option>
+                            <option value="13.7">13.7 mm</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="h_intrinsic_current" class="block text-sm font-medium text-gray-700 mb-1">ICL Intrinsic Vault (h<sub>intrinsic</sub>, mm):</label>
+                        <input type="number" id="h_intrinsic_current" value="1.5" step="0.01" class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm" title="e.g., the natural vault of the ICL in BSS or in an unconstrained state">
+                        <p class="text-xs text-gray-500 mt-1">Based on clinical measurements, the intrinsic vault of an unconstrained ICL (e.g., in BSS) can be approximated as 1.5 mm.</p>
+                    </div>
+                    <div>
+                        <label for="alpha_ef_deg_current" class="block text-sm font-medium text-gray-700 mb-1">Current ICL axis (ef) angle with horizontal α<sub>current</sub> (degrees):</label>
+                        <input type="number" id="alpha_ef_deg_current" value="0" step="1" class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm" title="Initial surgery is typically horizontal placement (0 degrees)">
+                    </div>
+                    <div>
+                        <label for="icl_thickness_current" class="block text-sm font-medium text-gray-700 mb-1">Current ICL Central Thickness (mm):</label>
+                        <input type="number" id="icl_thickness_current" value="0.250" step="0.001" class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm" placeholder="0.200-0.300">
+                        <p class="text-xs text-gray-500 mt-1">Based on clinical measurements, ICL central thickness is usually between 0.200 - 0.300 mm. Default is 0.250 mm.</p>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="beta_internal_deg" class="block text-sm font-medium text-gray-700 mb-1">Angle between ICL internal diagonal and ef-axis |β| (degrees):</label>
+                        <input type="number" id="beta_internal_deg" value="24.0" step="0.1" class="w-full px-3 py-2 bg-gray-200 border border-gray-300 rounded-md shadow-sm sm:text-sm" readonly title="Fixed in this version">
+                        <p class="text-xs text-gray-500 mt-1">In this version, |β| is a fixed value (24.0°), representing the angle from the ef-axis to the ac and bd diagonals.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h4 class="text-lg font-semibold text-gray-800 border-b pb-2 mb-3">3. Actual Postoperative Status & Adjustment Parameters</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                    <div>
+                        <label for="actual_postop_vault" class="block text-sm font-medium text-gray-700 mb-1">Actual Postoperative Vault (mm):</label>
+                        <input type="number" id="actual_postop_vault" step="0.001" class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm" placeholder="e.g., 0.450 (ideal range: 0.250 - 0.750 mm)">
+                        <p class="text-xs text-red-500 mt-1 font-semibold">Note: Please enter the value in millimeters (mm) (e.g., 1045µm should be entered as 1.045).</p>
+                    </div>
+                    <div>
+                        <label for="icl_type" class="block text-sm font-medium text-gray-700 mb-1">ICL Type:</label>
+                        <select id="icl_type" class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm">
+                            <option value="NonToric">Standard ICL (Non-Toric)</option>
+                            <option value="TICL">TICL (Toric)</option>
+                        </select>
+                    </div>
+                    <div id="newTiclAngleSection" class="md:col-span-2" style="display: none;"> 
+                        <label for="alpha_ef_deg_new_ticl" class="block text-sm font-medium text-gray-700 mb-1">Expected implantation angle for new TICL α<sub>new_TICL</sub> (degrees):</label>
+                        <input type="number" id="alpha_ef_deg_new_ticl" value="0" step="1" class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm" title="If replacing with a new TICL, enter its expected implantation angle">
+                        <p class="text-xs text-gray-500 mt-1">This angle is only used for calculation when ICL type is TICL and a size change is recommended. Defaults to 0 degrees.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button id="calculateButton" class="w-full bg-sky-600 hover:bg-sky-700 text-white font-semibold py-3 px-4 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-opacity-50 transition duration-150 ease-in-out">
+            Get Adjustment Suggestions
+        </button>
+
+        <div id="resultsArea" class="mt-6 sm:mt-8 p-4 sm:p-6 bg-gray-50 rounded-lg shadow-inner min-h-[250px]">
+            <h4 class="text-lg font-semibold text-gray-800 mb-3 border-b pb-2">Adjustment Suggestions:</h4>
+            <div id="resultsContent" class="text-sm text-gray-700 space-y-2">
+                Please fill in all parameters and click the button.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const BETA_INTERNAL_DEG_DEFAULT = 24.0;
+        const ICL_SIZES_MM = [12.1, 12.6, 13.2, 13.7]; 
+        const IDEAL_VAULT_MIN_MM = 0.250;
+        const IDEAL_VAULT_MAX_MM = 0.750;
+        const TARGET_VAULT_MM = 0.500;
+
+        function solveNewton(func, derivative, initialGuess, tolerance = 1e-9, maxIterations = 100) {
+            let x = initialGuess;
+            for (let i = 0; i < maxIterations; i++) {
+                const fx = func(x);
+                const fpx = derivative(x);
+                if (Math.abs(fpx) < 1e-12) return NaN;
+                const xNext = x - fx / fpx;
+                if (Math.abs(xNext - x) < tolerance) return xNext;
+                x = xNext;
+            }
+            return NaN;
+        }
+
+        function calculateArcLengthFromChordAndVault(chord, vault_intrinsic) {
+            if (vault_intrinsic < 0 || chord <= 0) {
+                 return { error: "ICL intrinsic vault cannot be negative, and ICL chord length must be positive." };
+            }
+            if (Math.abs(vault_intrinsic) < 1e-9) { 
+                return { arcLength: chord, R_intrinsic: Infinity, x_intrinsic_rad: 0 };
+            }
+            if (vault_intrinsic * 2 >= chord) { 
+                 return { error: "ICL intrinsic vault is too large (≥ half of the chord length), cannot form a valid arc." };
+            }
+            const H = vault_intrinsic;
+            const C = chord;
+            const R_intrinsic = (H / 2) + (C * C) / (8 * H);
+            if (R_intrinsic < H || R_intrinsic < C/2 ) {
+                return { error: "Intrinsic radius R calculated from chord and intrinsic vault is not valid." };
+            }
+            const cos_x_val = 1 - H / R_intrinsic;
+            let x_intrinsic_rad;
+            if (cos_x_val < -1.00000001 || cos_x_val > 1.00000001) { 
+                return { error: `cos value (${cos_x_val.toFixed(6)}) out of range [-1, 1] when calculating intrinsic half-angle x.` };
+            }
+            const clamped_cos_x_val = Math.max(-1, Math.min(1, cos_x_val));
+            x_intrinsic_rad = Math.acos(clamped_cos_x_val);
+            
+            const S_calculated = R_intrinsic * 2 * x_intrinsic_rad;
+            return { arcLength: S_calculated, R_intrinsic: R_intrinsic, x_intrinsic_rad: x_intrinsic_rad };
+        }
+
+        function getSulcusChordLength(r_x_sulcus, r_y_sulcus, phi_deg_horizontal) {
+            const phi_rad_horizontal = phi_deg_horizontal * (Math.PI / 180);
+            const cos_phi_sq = Math.cos(phi_rad_horizontal) ** 2;
+            const sin_phi_sq = Math.sin(phi_rad_horizontal) ** 2;
+            const numerator_rho_sq = (r_x_sulcus ** 2 * r_y_sulcus ** 2);
+            const denominator_rho_sq = (r_y_sulcus ** 2 * cos_phi_sq) + (r_x_sulcus ** 2 * sin_phi_sq);
+            if (Math.abs(denominator_rho_sq) < 1e-12) return NaN;
+            const rho_sq = numerator_rho_sq / denominator_rho_sq;
+            return 2 * Math.sqrt(rho_sq);
+        }
+
+        function getGeometricVault(a_sulcus, b_sulcus, alpha_ef_deg, S_icl_arc, beta_internal_abs_deg) {
+            const r_x = a_sulcus / 2.0;
+            const r_y = b_sulcus / 2.0;
+
+            const phi_deg_ac = alpha_ef_deg - beta_internal_abs_deg;
+            const phi_deg_bd = alpha_ef_deg + beta_internal_abs_deg;
+
+            const chord_ac = getSulcusChordLength(r_x, r_y, phi_deg_ac);
+            const chord_bd = getSulcusChordLength(r_x, r_y, phi_deg_bd);
+
+            if (isNaN(chord_ac) || isNaN(chord_bd)) {
+                return { error: "Error calculating elliptical chord length." };
+            }
+
+            let dominant_chord, dominant_phi_deg, dominant_diag_name;
+            if (chord_ac <= chord_bd) {
+                dominant_chord = chord_ac;
+                dominant_phi_deg = phi_deg_ac;
+                dominant_diag_name = "ac";
+            } else {
+                dominant_chord = chord_bd;
+                dominant_phi_deg = phi_deg_bd;
+                dominant_diag_name = "bd";
+            }
+
+            if (dominant_chord > S_icl_arc + 1e-9) {
+                return { error: `Dominant sulcus chord (${dominant_chord.toFixed(4)}mm) is greater than ICL arc length (${S_icl_arc.toFixed(4)}mm).` };
+            } else if (Math.abs(dominant_chord - S_icl_arc) < 1e-9) {
+                return { h_geom: 0.0, dominant_chord: dominant_chord, dominant_phi_deg: dominant_phi_deg, dominant_diag_name: dominant_diag_name, R_arc: Infinity, theta_arc_deg: 0.0 };
+            }
+
+            const k = dominant_chord / S_icl_arc;
+            const funcToSolve = (x) => k * x - Math.sin(x);
+            const derivativeOfFunc = (x) => k - Math.cos(x);
+            let x_initial = Math.PI / 4;
+            if (k > 0.95) x_initial = Math.sqrt(6 * (1 - k));
+            if (isNaN(x_initial) || x_initial < 1e-6) x_initial = 1e-5;
+
+            let x_solution = solveNewton(funcToSolve, derivativeOfFunc, x_initial);
+            if (isNaN(x_solution) || x_solution <= 0 || x_solution >= Math.PI / 2) {
+                x_solution = solveNewton(funcToSolve, derivativeOfFunc, 0.01);
+                 if (isNaN(x_solution) || x_solution <= 0 || x_solution >= Math.PI / 2) {
+                     return { error: "Numerical solver failed to find a solution (x) to calculate geometric vault." };
+                 }
+            }
+            const theta_arc_rad = 2 * x_solution;
+            const R_arc = (Math.abs(theta_arc_rad) < 1e-12) ? Infinity : S_icl_arc / theta_arc_rad;
+            const h_geom = R_arc * (1 - Math.cos(x_solution));
+            
+            return { 
+                h_geom: h_geom, 
+                dominant_chord: dominant_chord,
+                dominant_phi_deg: dominant_phi_deg, 
+                dominant_diag_name: dominant_diag_name,
+                R_arc: R_arc, 
+                theta_arc_deg: theta_arc_rad * (180 / Math.PI),
+                phi_deg_ac: phi_deg_ac, chord_ac: chord_ac,
+                phi_deg_bd: phi_deg_bd, chord_bd: chord_bd
+            };
+        }
+        
+        const iclTypeSelect = document.getElementById('icl_type');
+        const newTiclAngleSection = document.getElementById('newTiclAngleSection');
+
+        function toggleNewTiclAngleSection() {
+            if (iclTypeSelect.value === 'TICL') {
+                newTiclAngleSection.style.display = 'block';
+            } else {
+                newTiclAngleSection.style.display = 'none';
+            }
+        }
+        
+        toggleNewTiclAngleSection();
+        iclTypeSelect.addEventListener('change', toggleNewTiclAngleSection);
+
+
+        const calculateButton = document.getElementById('calculateButton');
+        const resultsContent = document.getElementById('resultsContent');
+        document.getElementById('beta_internal_deg').value = BETA_INTERNAL_DEG_DEFAULT;
+
+        calculateButton.addEventListener('click', () => {
+            resultsContent.innerHTML = ""; 
+
+            const params = {
+                a_sulcus: parseFloat(document.getElementById('a_sulcus').value),
+                b_sulcus: parseFloat(document.getElementById('b_sulcus').value),
+                stsl: parseFloat(document.getElementById('stsl').value),
+                L_icl_chord_current: parseFloat(document.getElementById('L_icl_chord_current').value),
+                h_intrinsic_current: parseFloat(document.getElementById('h_intrinsic_current').value),
+                alpha_ef_deg_current: parseFloat(document.getElementById('alpha_ef_deg_current').value),
+                icl_thickness_current: parseFloat(document.getElementById('icl_thickness_current').value),
+                beta_internal_deg: parseFloat(document.getElementById('beta_internal_deg').value),
+                actual_postop_vault: parseFloat(document.getElementById('actual_postop_vault').value),
+                icl_type: document.getElementById('icl_type').value,
+                alpha_ef_deg_new_ticl: parseFloat(document.getElementById('alpha_ef_deg_new_ticl').value)
+            };
+
+            for (const key in params) {
+                if (isNaN(params[key]) && key !== 'icl_type') {
+                    resultsContent.innerHTML = `<p class="text-red-600 font-medium">Error: Input for "${key}" is invalid or missing.</p>`;
+                    return;
+                }
+            }
+            if (params.actual_postop_vault < 0) {
+                resultsContent.innerHTML = `<p class="text-red-600 font-medium">Error: "Actual Postoperative Vault" (${(params.actual_postop_vault * 1000).toFixed(1)} µm) cannot be negative. This is an abnormal clinical situation, please verify the input.</p>`;
+                return;
+            }
+            if (params.stsl < 0 || params.icl_thickness_current < 0) {
+                resultsContent.innerHTML = `<p class="text-red-600 font-medium">Error: STSL and ICL Central Thickness cannot be negative.</p>`;
+                return;
+            }
+            
+            const arcResultCurrent = calculateArcLengthFromChordAndVault(params.L_icl_chord_current, params.h_intrinsic_current);
+            if (arcResultCurrent.error) {
+                resultsContent.innerHTML = `<p class="text-red-600 font-medium">Error calculating current ICL arc length: ${arcResultCurrent.error}</p>`;
+                return;
+            }
+            const S_icl_arc_current = arcResultCurrent.arcLength;
+            
+            let initialInfoHtml = `<div class="results-section"><h5>Initial State Analysis:</h5><p class="text-xs text-gray-600">Current ICL (L<sub>ICL</sub>=${params.L_icl_chord_current.toFixed(2)}mm, h<sub>int</sub>=${params.h_intrinsic_current.toFixed(2)}mm) calculated arc length S<sub>calc</sub> = ${S_icl_arc_current.toFixed(4)}mm.</p>`;
+
+            const geomResultInitial = getGeometricVault(params.a_sulcus, params.b_sulcus, params.alpha_ef_deg_current, S_icl_arc_current, params.beta_internal_deg);
+            if (geomResultInitial.error) {
+                resultsContent.innerHTML = initialInfoHtml + `<p class="text-red-600 font-medium">Error calculating initial theoretical geometric vault: ${geomResultInitial.error}</p></div>`;
+                return;
+            }
+            const h_geom_initial = geomResultInitial.h_geom;
+            const theoretical_clinical_vault_initial = h_geom_initial - params.icl_thickness_current - params.stsl;
+
+            initialInfoHtml += `<p class="text-xs text-gray-600">At α=${params.alpha_ef_deg_current.toFixed(1)}°, dominant diagonal is '${geomResultInitial.dominant_diag_name}' (φ=${geomResultInitial.dominant_phi_deg.toFixed(1)}°), spanning chord length c'=${geomResultInitial.dominant_chord.toFixed(4)}mm.</p>`;
+            initialInfoHtml += `<p class="text-xs text-gray-600">Initial theoretical geometric vault (h<sub>geom_initial</sub>): ${h_geom_initial.toFixed(4)} mm.</p>`;
+            initialInfoHtml += `<p class="text-xs text-gray-600">Initial theoretical clinical vault (h<sub>geom_initial</sub> - thickness - STSL): ${theoretical_clinical_vault_initial.toFixed(4)} mm.</p></div>`;
+            resultsContent.innerHTML = initialInfoHtml;
+
+
+            let suggestionsHtml = "";
+            if (params.actual_postop_vault >= IDEAL_VAULT_MIN_MM && params.actual_postop_vault <= IDEAL_VAULT_MAX_MM) {
+                suggestionsHtml = `<div class="results-section mt-4"><h5>Assessment:</h5><p class="text-green-600 font-semibold">Current actual vault (${(params.actual_postop_vault * 1000).toFixed(1)} µm) is within the ideal range (${(IDEAL_VAULT_MIN_MM * 1000).toFixed(0)} - ${(IDEAL_VAULT_MAX_MM * 1000).toFixed(0)} µm). Vault is good, adjustment is generally not required.</p></div>`;
+            } else {
+                suggestionsHtml = `<div class="results-section mt-4"><h5>Assessment:</h5><p class="text-orange-600 font-semibold">Current actual vault (${(params.actual_postop_vault * 1000).toFixed(1)} µm) is outside the ideal range (${(IDEAL_VAULT_MIN_MM * 1000).toFixed(0)} - ${(IDEAL_VAULT_MAX_MM * 1000).toFixed(0)} µm). Adjustment is recommended.</p>`;
+                
+                let delta_theoretical_clinical_vault; 
+                let predicted_new_actual_vault;
+
+                if (params.icl_type === "TICL") {
+                    suggestionsHtml += `<div class="results-section"><h5>Adjustment Suggestions (TICL):</h5><p>TICL vault cannot be adjusted by rotation. Changing the ICL size is recommended.</p>`;
+                    let new_L_icl_chord;
+                    const currentIndex = ICL_SIZES_MM.indexOf(params.L_icl_chord_current);
+
+                    if (params.actual_postop_vault < IDEAL_VAULT_MIN_MM) {
+                        if (currentIndex === -1) { suggestionsHtml += `<p class="text-red-500">Current ICL size not in standard list, cannot automatically suggest a new size.</p>`; }
+                        else if (currentIndex === ICL_SIZES_MM.length - 1) { suggestionsHtml += `<p class="text-red-500">Current ICL is already the largest size, cannot change to a larger one.</p>`;}
+                        else { new_L_icl_chord = ICL_SIZES_MM[currentIndex + 1]; }
+                    } else { 
+                        if (currentIndex === -1) { suggestionsHtml += `<p class="text-red-500">Current ICL size not in standard list, cannot automatically suggest a new size.</p>`; }
+                        else if (currentIndex === 0) { suggestionsHtml += `<p class="text-red-500">Current ICL is already the smallest size, cannot change to a smaller one.</p>`;}
+                        else { new_L_icl_chord = ICL_SIZES_MM[currentIndex - 1]; }
+                    }
+
+                    if (new_L_icl_chord) {
+                        const arcResultNewSize = calculateArcLengthFromChordAndVault(new_L_icl_chord, params.h_intrinsic_current); 
+                        if (arcResultNewSize.error) {
+                            suggestionsHtml += `<p class="text-red-500">Error calculating arc length for new ICL size: ${arcResultNewSize.error}</p>`;
+                        } else {
+                            const S_icl_arc_new_size = arcResultNewSize.arcLength;
+                            const geomResultNewSize = getGeometricVault(params.a_sulcus, params.b_sulcus, params.alpha_ef_deg_new_ticl, S_icl_arc_new_size, params.beta_internal_deg);
+                            
+                            if (geomResultNewSize.error) {
+                                suggestionsHtml += `<p class="text-red-500">Error calculating theoretical geometric vault for new size (at new angle ${params.alpha_ef_deg_new_ticl.toFixed(1)}°): ${geomResultNewSize.error}</p>`;
+                            } else {
+                                const h_geom_new_size = geomResultNewSize.h_geom;
+                                const theoretical_clinical_vault_new_size = h_geom_new_size - params.icl_thickness_current - params.stsl; 
+                                delta_theoretical_clinical_vault = theoretical_clinical_vault_new_size - theoretical_clinical_vault_initial;
+                                predicted_new_actual_vault = params.actual_postop_vault + delta_theoretical_clinical_vault;
+                                
+                                suggestionsHtml += `<p>Recommend changing ICL size from ${params.L_icl_chord_current}mm to ${new_L_icl_chord}mm (with new TICL expected at α=${params.alpha_ef_deg_new_ticl.toFixed(1)}°).</p>`;
+                                suggestionsHtml += `<p>The predicted clinical vault will ${delta_theoretical_clinical_vault >= 0 ? 'increase' : 'decrease'} by approx. <strong class="text-blue-600">${Math.abs(delta_theoretical_clinical_vault * 1000).toFixed(0)} µm</strong>.</p>`;
+                                suggestionsHtml += `<p>The estimated new clinical vault is approx.: <strong class="text-emerald-600">${(predicted_new_actual_vault * 1000).toFixed(1)} µm</strong>.</p>`;
+                            }
+                        }
+                    }
+                    suggestionsHtml += `</div>`;
+                } 
+                else if (params.icl_type === "NonToric") {
+                    suggestionsHtml += `<div class="results-section"><h5>Adjustment Suggestions (Standard ICL):</h5>`;
+                    
+                    suggestionsHtml += `<div class="results-section"><h6>Option 1: Rotate ICL (Recommended)</h6>`;
+                    const target_actual_vault_change = TARGET_VAULT_MM - params.actual_postop_vault;
+                    const target_theoretical_clinical_vault_new = theoretical_clinical_vault_initial + target_actual_vault_change;
+                    
+                    let best_rotation_alpha = params.alpha_ef_deg_current;
+                    let min_diff_to_target_theoretical_clinical_vault = Infinity;
+                    let best_predicted_new_actual_vault_rotation = params.actual_postop_vault;
+                    let best_delta_theoretical_clinical_rotation = 0;
+                    let found_optimal_rotation = false;
+
+                    const candidate_alphas = [];
+                    for (let i = 0; i <= 90; i += 5) { candidate_alphas.push(i); }
+                    [0, params.beta_internal_deg, 45, 90 - params.beta_internal_deg, 90].forEach(a => {
+                        const angle = Math.round(a); 
+                        if (!candidate_alphas.includes(angle) && angle >=0 && angle <=90) candidate_alphas.push(angle);
+                    });
+                    candidate_alphas.sort((a,b) => a-b);
+
+                    for (const alpha_new of candidate_alphas) {
+                        if (alpha_new === params.alpha_ef_deg_current) continue; 
+                        const geomResultRotated = getGeometricVault(params.a_sulcus, params.b_sulcus, alpha_new, S_icl_arc_current, params.beta_internal_deg);
+                        if (!geomResultRotated.error) {
+                            const h_geom_rotated = geomResultRotated.h_geom;
+                            const theoretical_clinical_vault_rotated = h_geom_rotated - params.icl_thickness_current - params.stsl;
+                            const current_diff = Math.abs(theoretical_clinical_vault_rotated - target_theoretical_clinical_vault_new);
+
+                            if (current_diff < min_diff_to_target_theoretical_clinical_vault) {
+                                min_diff_to_target_theoretical_clinical_vault = current_diff;
+                                best_rotation_alpha = alpha_new;
+                                best_delta_theoretical_clinical_rotation = theoretical_clinical_vault_rotated - theoretical_clinical_vault_initial;
+                                best_predicted_new_actual_vault_rotation = params.actual_postop_vault + best_delta_theoretical_clinical_rotation;
+                                found_optimal_rotation = true;
+                            }
+                        }
+                    }
+
+                    if (found_optimal_rotation) {
+                        let stability_comment = "";
+                        const beta = params.beta_internal_deg;
+                        if ((best_rotation_alpha >= 0 && best_rotation_alpha <= beta) || (best_rotation_alpha >= (90-beta) && best_rotation_alpha <= 90)) {
+                            stability_comment = "(This angle generally provides good rotational stability)";
+                        } else if (best_rotation_alpha > beta && best_rotation_alpha < (90-beta)) {
+                             stability_comment = "(Note: This angle may have slightly poorer rotational stability)";
+                        }
+                        suggestionsHtml += `<p>Recommend rotating the ICL so the ef-axis is at <strong class="text-blue-600">${best_rotation_alpha.toFixed(1)}°</strong> to the horizontal ${stability_comment}.</p>`;
+                        suggestionsHtml += `<p>The predicted clinical vault will ${best_delta_theoretical_clinical_rotation >= 0 ? 'increase' : 'decrease'} by approx. <strong class="text-blue-600">${Math.abs(best_delta_theoretical_clinical_rotation * 1000).toFixed(0)} µm</strong>.</p>`;
+                        suggestionsHtml += `<p>The estimated new clinical vault is approx.: <strong class="text-emerald-600">${(best_predicted_new_actual_vault_rotation * 1000).toFixed(1)} µm</strong>.</p>`;
+                    } else {
+                        suggestionsHtml += `<p class="text-orange-500">Could not find a significantly better vault by rotation, or an error occurred.</p>`;
+                    }
+                    suggestionsHtml += `</div>`;
+
+                    suggestionsHtml += `<div class="results-section mt-3"><h6>Option 2: Change ICL Size</h6>`;
+                    let new_L_icl_chord_nontoric;
+                    const currentIndex_nontoric = ICL_SIZES_MM.indexOf(params.L_icl_chord_current);
+
+                    if (params.actual_postop_vault < TARGET_VAULT_MM) { 
+                        if (currentIndex_nontoric === -1) {suggestionsHtml += `<p class="text-orange-500">Current ICL size not in standard list, cannot automatically suggest a new size.</p>`;}
+                        else if (currentIndex_nontoric === ICL_SIZES_MM.length - 1) { suggestionsHtml += `<p class="text-orange-500">Current ICL is already the largest size, cannot suggest a larger one.</p>`;}
+                        else { new_L_icl_chord_nontoric = ICL_SIZES_MM[currentIndex_nontoric + 1]; }
+                    } else if (params.actual_postop_vault > TARGET_VAULT_MM) { 
+                        if (currentIndex_nontoric === -1) {suggestionsHtml += `<p class="text-orange-500">Current ICL size not in standard list, cannot automatically suggest a new size.</p>`;}
+                        else if (currentIndex_nontoric === 0) { suggestionsHtml += `<p class="text-orange-500">Current ICL is already the smallest size, cannot suggest a smaller one.</p>`;}
+                        else { new_L_icl_chord_nontoric = ICL_SIZES_MM[currentIndex_nontoric - 1]; }
+                    } else {
+                         suggestionsHtml += `<p>Current vault is already close to the target value of ${TARGET_VAULT_MM.toFixed(3)}mm, a size change is generally not needed.</p>`;
+                    }
+
+                    if (new_L_icl_chord_nontoric) {
+                        const arcResultNewSizeNT = calculateArcLengthFromChordAndVault(new_L_icl_chord_nontoric, params.h_intrinsic_current);
+                        if (arcResultNewSizeNT.error) {
+                            suggestionsHtml += `<p class="text-red-500">Error calculating arc length for new ICL size: ${arcResultNewSizeNT.error}</p>`;
+                        } else {
+                            const S_icl_arc_new_sizeNT = arcResultNewSizeNT.arcLength;
+                            const geomResultNewSizeNT = getGeometricVault(params.a_sulcus, params.b_sulcus, 0, S_icl_arc_new_sizeNT, params.beta_internal_deg); 
+                            
+                            if (geomResultNewSizeNT.error) {
+                                suggestionsHtml += `<p class="text-red-500">Error calculating theoretical geometric vault for new size: ${geomResultNewSizeNT.error}</p>`;
+                            } else {
+                                const h_geom_new_sizeNT = geomResultNewSizeNT.h_geom;
+                                const theoretical_clinical_vault_new_sizeNT = h_geom_new_sizeNT - params.icl_thickness_current - params.stsl;
+                                
+                                const geomResultInitialAtZero = getGeometricVault(params.a_sulcus, params.b_sulcus, 0, S_icl_arc_current, params.beta_internal_deg);
+                                let theoretical_clinical_vault_initial_at_zero = theoretical_clinical_vault_initial; 
+                                if (!geomResultInitialAtZero.error) {
+                                    theoretical_clinical_vault_initial_at_zero = geomResultInitialAtZero.h_geom - params.icl_thickness_current - params.stsl;
+                                }
+
+                                delta_theoretical_clinical_vault = theoretical_clinical_vault_new_sizeNT - theoretical_clinical_vault_initial_at_zero;
+                                predicted_new_actual_vault = params.actual_postop_vault + delta_theoretical_clinical_vault; 
+                                
+                                suggestionsHtml += `<p>Recommend changing ICL size from ${params.L_icl_chord_current}mm to ${new_L_icl_chord_nontoric}mm (and placing it horizontally).</p>`;
+                                suggestionsHtml += `<p>The predicted clinical vault will ${delta_theoretical_clinical_vault >= 0 ? 'increase' : 'decrease'} by approx. <strong class="text-blue-600">${Math.abs(delta_theoretical_clinical_vault * 1000).toFixed(0)} µm</strong>.</p>`;
+                                suggestionsHtml += `<p>The estimated new clinical vault is approx.: <strong class="text-emerald-600">${(predicted_new_actual_vault * 1000).toFixed(1)} µm</strong>.</p>`;
+                            }
+                        }
+                    }
+                    suggestionsHtml += `</div>`; 
+                    suggestionsHtml += `</div>`; 
+                }
+            }
+            resultsContent.innerHTML += suggestionsHtml;
+        });
+    </script>
+</body>
+</html>
