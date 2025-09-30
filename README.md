@@ -35,4 +35,4 @@ License / 许可证
 This project is licensed under the MIT License.
 
 Contact / 联系方式
-For any questions or suggestions, please contact fseam@126.com].
+For any questions or suggestions, please contact fseam@126.com.
